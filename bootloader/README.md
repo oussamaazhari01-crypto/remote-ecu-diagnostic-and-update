@@ -27,3 +27,23 @@ safely transferring execution to the main application.
 2. Bootloader execution
 3. Update condition check
 4. Firmware update handling OR jump to application
+
+## Bootloader Metadata
+
+The bootloader uses a small metadata region in Flash to track firmware state:
+
+- Active slot: indicates which application slot (A or B) is currently running
+- Update pending flag: indicates a firmware update is in progress
+- Firmware version: version number of the application firmware
+- Firmware CRC: integrity check to validate firmware
+
+## Bootloader State Machine
+
+1. INIT: Minimal system initialization
+2. CHECK_UPDATE: Evaluate metadata and update requests
+   - If update requested → FLASHING
+   - Else → JUMP_TO_APP
+3. FLASHING: Receive firmware chunks and write to inactive slot
+4. VERIFY_CRC: Validate firmware integrity
+5. UPDATE_COMPLETE: Mark new slot as active
+6. JUMP_TO_APP: Safely transfer execution to application
